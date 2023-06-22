@@ -1,7 +1,9 @@
 # Options-Quote-Handler - OQH
- the script reads and processes option tickers from CSV files, filters and writes the processed data to new CSV files,
+ The script reads and processes option tickers from CSV files, filters and writes the processed data to new CSV files,
  executes subprocesses for data clearing and additional data processing, and measures the total elapsed time for the script to run.
-The script has asynchronous and multi thread functionality.
+The script has asynchronous and multi thread functionality. 
+
+Makes use of the polygon.io API. 
 
 It iterates over each ticker and performs the following actions:
   Reads a CSV file ({ticker}calls_processed.csv) into a pandas DataFrame.
