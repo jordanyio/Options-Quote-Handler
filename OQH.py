@@ -10,10 +10,10 @@ now = datetime.datetime.now()
 start_time = t.time()
 
 for ticker in tickers:
-    filename = (f"{ticker}calls_processed.csv")
+    filename = (f"{ticker}calls.csv")
 
     try:
-        df = pd.read_csv(f"{ticker}calls_processed.csv")
+        df = pd.read_csv(f"{ticker}calls.csv")
     except pd.errors.EmptyDataError:
         print("c.Err.18.empty")
     except pd.errors.ParserError:
@@ -38,7 +38,7 @@ for ticker in tickers:
         pass 
 
     df["P/L"] = 0 # P/L must be calculated here. 
-    filtered_df = df[(df["P/L"] >= -200) & (df["Strike"] >= 101) & (df["mid"] != 0)]
+    filtered_df = df[(df["P/L"] >= -200) & (df["Strike"] >= 1) & (df["mid"] != 0)]
     filtered_df = filtered_df.sort_values("P/L", ascending=False)
     filtered_df = filtered_df[filtered_df['P/L'] >= -500]
 
@@ -51,18 +51,18 @@ for ticker in tickers:
     # Write the remaining rows starting from the third column
     # filtered_df.iloc[2:, 2:].to_csv(f"{ticker}calls_filtered.csv", index=False, header=False, mode="a")
 
-    subprocess.Popen(["python", "polyApi/clearTrades.py"]).wait()
-    print(f"clearTrades for {ticker} is done")
+    subprocess.Popen(["python", "clearFile{ticker}.py"]).wait()
+    print(f"clearFile for {ticker} is done")
 
 with ThreadPoolExecutor(max_workers=len(tickers)) as executor:
     futures = []
     for ticker in tickers:
-        futures.append(executor.submit(subprocess.Popen, ["python", f"polyApi/conData{ticker}.py"]))
+        futures.append(executor.submit(subprocess.Popen, ["python", f"data{ticker}.py"]))
     for future in futures:
         future.result()
 
-subprocess.Popen(["python", "polyApi/sortTrades.py"]).wait()
-print("sortTrades is done")
+subprocess.Popen(["python", "sortFile{ticker}.py"]).wait()
+print("sortFile is done")
 
 end_time = t.time()
 elapsed_time = end_time - start_time
